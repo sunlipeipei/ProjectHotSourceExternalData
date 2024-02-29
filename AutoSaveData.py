@@ -53,7 +53,6 @@ def get_Seattle_airquality_data(url):
     # Parse the HTML content inside the <description> tag
     soup = BeautifulSoup(description, 'html.parser')
     
-<<<<<<< HEAD
     # Extract air quality data
     air_quality = soup.get_text(separator=' ', strip=True)
     
@@ -64,23 +63,6 @@ def get_Seattle_airquality_data(url):
         return f"{match.group(1)} AQI - Particle Pollution (2.5 microns)"
     else:
         return "Specific air quality data not found"
-=======
-    # Find the element containing "Current Air Quality"
-    current_air_quality_element = soup.find('b', text='Current Air Quality:')
-    
-    # Check if the element is found
-    if current_air_quality_element:
-        # Extract everything from "Current Air Quality" to the end of the <description> tag
-        current_air_quality_section = current_air_quality_element.find_next('div').get_text(separator=' ', strip=True)
-    else:
-        current_air_quality_section = "Current Air Quality section not found"
-    
-    # Construct a dictionary or any data structure to store and return the information
-    air_quality_data = current_air_quality_section
-    
-
-    return air_quality_data
->>>>>>> c52926f78710afa888a3680bb701f8d136409fe3
 
 def append_to_csv(temperature, humidity, air_quality):
     # Current timestamp
