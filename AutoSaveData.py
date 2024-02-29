@@ -55,8 +55,14 @@ def get_Seattle_airquality_data(url):
     
     # Extract air quality data
     air_quality = soup.get_text(separator=' ', strip=True)
-
-    return air_quality
+    
+    # Use a regular expression to extract the AQI value and pollution type
+    match = re.search(r"(\d+) AQI - Particle Pollution \(2\.5 microns\)", air_quality)
+    if match:
+        # Returns only the AQI value and the "Particle Pollution (2.5 microns)" part
+        return f"{match.group(1)} AQI - Particle Pollution (2.5 microns)"
+    else:
+        return "Specific air quality data not found"
 
 def append_to_csv(temperature, humidity, air_quality):
     # Current timestamp
