@@ -53,10 +53,21 @@ def get_Seattle_airquality_data(url):
     # Parse the HTML content inside the <description> tag
     soup = BeautifulSoup(description, 'html.parser')
     
-    # Extract air quality data
-    air_quality = soup.get_text(separator=' ', strip=True)
+    # Find the element containing "Current Air Quality"
+    current_air_quality_element = soup.find('b', text='Current Air Quality:')
+    
+    # Check if the element is found
+    if current_air_quality_element:
+        # Extract everything from "Current Air Quality" to the end of the <description> tag
+        current_air_quality_section = current_air_quality_element.find_next('div').get_text(separator=' ', strip=True)
+    else:
+        current_air_quality_section = "Current Air Quality section not found"
+    
+    # Construct a dictionary or any data structure to store and return the information
+    air_quality_data = current_air_quality_section
+    
 
-    return air_quality
+    return air_quality_data
 
 def append_to_csv(temperature, humidity, air_quality):
     # Current timestamp
@@ -76,7 +87,10 @@ def scheduled_weather_data(sc):
     # Fetch air quality data
     air_quality = get_Seattle_airquality_data(Current_Conditions_RSS)
     
-    print(f"Temperature: {temperature}C, Humidity: {humidity}%, Air Quality: {air_quality}")
+    print(f"Weather Conditions at Seattle:")
+    print(f"  Temperature: {temperature}°C")
+    print(f"  Humidity: {humidity}%")
+    print(f"  Air Quality: {air_quality}")
     append_to_csv(temperature, humidity, air_quality)
     
     # Schedule the function to be called every 3600 seconds (1 hour)
