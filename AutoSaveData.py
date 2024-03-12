@@ -53,11 +53,18 @@ def get_Seattle_airquality_data(url):
     # Parse the HTML content inside the <description> tag
     soup = BeautifulSoup(description, 'html.parser')
     
-    # Extract air quality data
-    air_quality = soup.get_text(separator=' ', strip=True)
+   # Find the element containing "Current Air Quality"
+    current_air_quality_element = soup.find('b', string='Current Air Quality:')
+    
+ # Check if the element is found
+    if current_air_quality_element:
+        # Extract everything from "Current Air Quality" to the end of the <description> tag
+        current_air_quality_section = current_air_quality_element.find_next('div').get_text(separator=' ', strip=True)
+    else:
+        current_air_quality_section = "Current Air Quality section not found"
     
     # Use a regular expression to extract the AQI value and pollution type
-    match = re.search(r"(\d+) AQI - Particle Pollution \(2\.5 microns\)", air_quality)
+    match = re.search(r"(\d+) AQI - Particle Pollution \(2\.5 microns\)", current_air_quality_section)
     if match:
         # Returns only the AQI value and the "Particle Pollution (2.5 microns)" part
         return f"{match.group(1)} AQI - Particle Pollution (2.5 microns)"
