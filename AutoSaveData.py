@@ -2,6 +2,7 @@ import requests
 import csv
 import sched
 import time
+import json
 from datetime import datetime
 from xml.etree import ElementTree as ET
 from bs4 import BeautifulSoup
@@ -71,12 +72,25 @@ def get_Seattle_airquality_data(url):
     else:
         return "Specific air quality data not found"
 
-def append_to_csv(temperature, humidity, air_quality):
+# def append_to_csv(temperature, humidity, air_quality):
+#     # Current timestamp
+#     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#     with open('weather_data.csv', 'a', newline='') as file:
+#         writer = csv.writer(file)
+#         writer.writerow([now, temperature, humidity, air_quality])
+
+def append_to_json(temperature, humidity, air_quality):
     # Current timestamp
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open('weather_data.csv', 'a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([now, temperature, humidity, air_quality])
+    data = {
+        "timestamp": now,
+        "temperature": temperature,
+        "humidity": humidity,
+        "air_quality": air_quality
+    }
+    with open('weather_data.json', 'a') as file:
+        json.dump(data, file)
+        file.write('\n')
 
 def scheduled_weather_data(sc): 
     NEU_latitude = "47.6062"
@@ -93,7 +107,7 @@ def scheduled_weather_data(sc):
     print(f"  Temperature: {temperature}°C")
     print(f"  Humidity: {humidity}%")
     print(f"  Air Quality: {air_quality}")
-    append_to_csv(temperature, humidity, air_quality)
+    append_to_json(temperature, humidity, air_quality)    
     
     # Schedule the function to be called every 3600 seconds (1 hour)
     sc.enter(3600, 1, scheduled_weather_data, (sc,))
